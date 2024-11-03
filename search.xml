@@ -238,7 +238,7 @@ systemctl restart <span class="token function">docker</span><span aria-hidden="t
 <h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a><strong>环境搭建</strong></h3><hr>
 <p>我们选择Pycharm作为开发的IDE环境，使用conda管理虚拟环境。</p>
 <h5 id="Step-1-下载Anaconda"><a href="#Step-1-下载Anaconda" class="headerlink" title="Step 1 下载Anaconda"></a>Step 1 下载Anaconda</h5><hr>
-<p>前往官网下载Anaconda，并完成安装<br><a href="https://www.anaconda.com/">conda官网</a>)<br>安装完成后，打开命令行终端并输入下面指令</p>
+<p>前往官网下载Anaconda，并完成安装<br><a href="https://www.anaconda.com/">conda官网</a><br>安装完成后，打开命令行终端并输入下面指令</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">conda <span class="token parameter variable">-V</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>若显示conda系统信息，则已完成安装</p>
 <h5 id="Step-2-创建虚拟环境"><a href="#Step-2-创建虚拟环境" class="headerlink" title="Step 2 创建虚拟环境"></a>Step 2 创建虚拟环境</h5><hr>
@@ -263,12 +263,12 @@ conda remove <span class="token parameter variable">--name</span> myenv<span ari
 conda <span class="token function">install</span> xxxx // 安装特定包<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <h5 id="Step-3-安装pycharm"><a href="#Step-3-安装pycharm" class="headerlink" title="Step 3 安装pycharm"></a>Step 3 安装pycharm</h5><hr>
-<p>前往官网安装pycharm<br><a href="https://www.jetbrains.com/pycharm/">官网</a>)<br>安装时可以选择将vscode风格和插件一键移植到pycharm<br>安装完成后，新建一个项目<br>![[Pasted image 20241031165938.png]]<br>python路径选择你刚创建的虚拟环境，选择其中的python.exe文件即可<br>至此，你已经完成全部环境配置，可以尝试运行简单python程序<br>新建python程序，输入下面的代码并运行，检查解释器是否完成配置</p>
+<p>前往官网安装pycharm<br><a href="https://www.jetbrains.com/pycharm/">官网</a><br>安装时可以选择将vscode风格和插件一键移植到pycharm<br>安装完成后，新建一个项目<br><img src="/yongxu.github.io/images/pytorch_p1.png" loading="lazy"><br>python路径选择你刚创建的虚拟环境，选择其中的python.exe文件即可<br>至此，你已经完成全部环境配置，可以尝试运行简单python程序<br>新建python程序，输入下面的代码并运行，检查解释器是否完成配置</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span>Hello World<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h3 id="训练你的第一个模型"><a href="#训练你的第一个模型" class="headerlink" title="训练你的第一个模型"></a><strong>训练你的第一个模型</strong></h3><hr>
 <p>我们选择从<a href="https://www.kaggle.com/">Kaggle</a>上获取开源数据，进行网络训练。</p>
 <h5 id="Step-1-下载数据集"><a href="#Step-1-下载数据集" class="headerlink" title="Step 1 下载数据集"></a>Step 1 下载数据集</h5><hr>
-<p>前往官网<a href="https://www.kaggle.com/datasets/rahmasleam/bird-speciees-dataset">Bird Speciees Dataset (kaggle.com)</a><br>直接下载数据集并解压到工作目录<br>你可以检查文件夹中的各个图片，应该是六种特征明显的鸟类。<br>检查无误后我们将开始编写程序。</p>
+<p>前往官网<a href="https://www.kaggle.com/datasets/rahmasleam/bird-speciees-dataset">Bird Speciees Dataset</a><br>直接下载数据集并解压到工作目录<br>你可以检查文件夹中的各个图片，应该是六种特征明显的鸟类。<br>检查无误后我们将开始编写程序。</p>
 <h5 id="Step-2-数据预处理"><a href="#Step-2-数据预处理" class="headerlink" title="Step 2 数据预处理"></a>Step 2 数据预处理</h5><hr>
 <p>一般而言，我们需要对输入的图像文件进行一些处理，包括</p>
 <ul>
