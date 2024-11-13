@@ -1,153 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>“类”的初步认识</title>
-    <url>/yongxu.github.io/2024/10/22/c++%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<h4 id="类的概念"><a href="#类的概念" class="headerlink" title="类的概念"></a><strong>类的概念</strong></h4><hr>
-<p>类是面向对象编程的核心。我喜欢把类理解为一组数据和一个接口。例如机器人可以是一个类，他有一些数据，如颜色、大小、型号等，还有一个接口，如移动、转动、开关等。<br>类可以包含成员变量、成员函数、构造函数、析构函数等。成员变量是类的状态，成员函数是类的行为。</p>
-<h4 id="类的声明和定义"><a href="#类的声明和定义" class="headerlink" title="类的声明和定义"></a><strong>类的声明和定义</strong></h4><hr>
-<p>通常我们将类的定义放在头文件，而类行为的实现放在源文件中。</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">Robot</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">// private:  声明成员变量</span>
-    <span class="token comment">// 禁止直接访问，只能通过接口函数访问</span>
-    <span class="token comment">// 在初始化时，通过构造函数初始化</span>
-    <span class="token keyword">private</span><span class="token operator">:</span>
-        string color<span class="token punctuation">;</span>
-        <span class="token keyword">float</span> size<span class="token punctuation">;</span>
-        <span class="token keyword">float</span> position<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-        <span class="token keyword">float</span> rotation<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token comment">// public:  声明接口函数</span>
-    <span class="token comment">// 允许直接访问，可以被其他函数调用</span>
-    <span class="token keyword">public</span><span class="token operator">:</span>
-        <span class="token comment">/*
-         构造函数
-         构造函数的作用是初始化类的状态
-         初始化方法：
-            直接初始化，如：Robot r("red", 1.0);
-            通过参数初始化，如：Robot r = Robot("red", 1.0);
-        */</span>
-        <span class="token function">Robot</span><span class="token punctuation">(</span>string c<span class="token punctuation">,</span> <span class="token keyword">float</span> s<span class="token punctuation">,</span> <span class="token keyword">float</span> p<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">float</span> r<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">/*
-         析构函数
-         析构函数的作用是释放类的资源（定义类的程序块结束后）
-         一般不需要内容，除非使用new申请了内存需要手动释放
-         */</span>
-        <span class="token operator">~</span><span class="token function">Robot</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">void</span> <span class="token function">move</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">void</span> <span class="token function">rotate</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">void</span> <span class="token function">show</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-
-下面是类的实现：
-<span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">Robot</span><span class="token punctuation">(</span>string c<span class="token punctuation">,</span> <span class="token keyword">float</span> s<span class="token punctuation">,</span> <span class="token keyword">float</span> p<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">float</span> r<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    color <span class="token operator">=</span> c<span class="token punctuation">;</span>
-    size <span class="token operator">=</span> s<span class="token punctuation">;</span>
-    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span> 
-        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> r<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token operator">~</span><span class="token function">Robot</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">// 释放内存</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token keyword">void</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> x<span class="token punctuation">;</span>
-        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> y<span class="token punctuation">;</span>
-        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> z<span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token keyword">void</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">rotate</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> x<span class="token punctuation">;</span>
-        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> y<span class="token punctuation">;</span>
-        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> z<span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token keyword">void</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">show</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"color: "</span> <span class="token operator">&lt;&lt;</span> color <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"size: "</span> <span class="token operator">&lt;&lt;</span> size <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"position: "</span> <span class="token operator">&lt;&lt;</span> position<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> position<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> position<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"rotation: "</span> <span class="token operator">&lt;&lt;</span> rotation<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> rotation<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> rotation<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>以上是类的声明和定义，我们可以看到，类中包含了一些成员变量，以及一些接口函数。</p>
-<pre class="line-numbers language-none"><code class="language-none">怎么理解接口？
-接口是服务端为客户端封装好的，客户端只需要调用接口函数，就能完成某些功能。
-服务端的责任是实现一些函数，并详细告知如何调用这些函数，以达到客户自己的目的。
-而客户端的任务就是详细阅读接口文档，并调用接口函数，完成自己的需求。
-所以，接口是服务端和客户端之间沟通的桥梁。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="如何使用类"><a href="#如何使用类" class="headerlink" title="如何使用类"></a><strong>如何使用类</strong></h4><hr>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">float</span> potions<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">3.0</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-<span class="token keyword">float</span> rotation<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.3</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-
-<span class="token comment">// 类的创建和结构类似</span>
-Robot <span class="token function">robot</span><span class="token punctuation">(</span><span class="token string">"red"</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 下面的创造方法实际上生成了一个临时对象，并将其赋值给了robot2</span>
-Robot robot2 <span class="token operator">=</span> <span class="token function">Robot</span><span class="token punctuation">(</span><span class="token string">"blue"</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">)</span><span class="token punctuation">;</span> 
-<span class="token comment">// 我们也可以定义一个指针变量指向类对象，但最后需要手动释放内存，因为析构函数没有delete</span>
-Robot <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Robot</span><span class="token punctuation">(</span><span class="token string">"green"</span><span class="token punctuation">,</span> <span class="token number">0.8</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 如果没有定义构造函数，可以不进行初始化赋值</span>
-Robot empty<span class="token punctuation">;</span>
-<span class="token comment">// 但如果已经定义了构造函数，这样的初始化是非法的。</span>
-<span class="token comment">// 但我们可以通过函数重载来使其合法</span>
-<span class="token comment">// 在类声明中，我们可以定义一个空参数的构造函数Robot();</span>
-
-<span class="token comment">// 在c++11中，我们可以用列表初始化的方式来初始化类对象</span>
-<span class="token comment">// 这需要列表内参数和某个构造函数参数一致</span>
-Robot robot3 <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"yellow"</span><span class="token punctuation">,</span> <span class="token number">0.7</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-Robot robot4<span class="token punctuation">&#123;</span><span class="token string">"black"</span><span class="token punctuation">,</span> <span class="token number">0.9</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-<span class="token comment">// 我们可以通过.来访问类的成员函数</span>
-robot<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">3.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-robot<span class="token punctuation">.</span><span class="token function">rotate</span><span class="token punctuation">(</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-robot<span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment">// 但当我们使用const来修饰类对象时，我们不能调用类的成员函数</span>
-<span class="token comment">// 因为成员函数可能修改类的状态，而const对象不能修改状态</span>
-<span class="token comment">// 所以我们可以将某些成员函数声明为const，这样就可以在const对象上调用</span>
-<span class="token keyword">const</span> Robot robot5 <span class="token operator">=</span> robot<span class="token punctuation">;</span>
-<span class="token keyword">void</span> <span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span><span class="token punctuation">;</span> <span class="token comment">// 将shoow最后加上const，表示该函数不修改类的状态，即可被调用</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="this指针"><a href="#this指针" class="headerlink" title="this指针"></a><strong>this指针</strong></h4><hr>
-<p>this指针是一个隐含的指针，指向当前对象的地址。在类的成员函数中，我们可以通过this指针来访问类的成员变量。<br>假如我们想让一个类的成员函数返回这个类本身，我们可以用this指针来实现。</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">// 第一个Robot表明这是函数的返回值类型</span>
-<span class="token comment">// 第二个Robot表明这是Robot类的一个成员函数</span>
-<span class="token keyword">const</span> Robot<span class="token operator">&amp;</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">returnthisrobot</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a><strong>作用域</strong></h4><hr>
-<p>为什么定义类的成员函数是要加上类名称<code>Robot::</code>呢？<br>原因是我们声明成员函数时，是在类内进行的，所以作用域局限在类内。<br>因此在类外进行定义时，需要加上类名称。<br>这也就意味着我们可以在类外定义另一个同名函数，而不会与类的成员函数冲突。</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">move</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>那为什么在类的成员函数中，我们可以直接使用类内的成员变量呢？<br>原因是成员函数都是内联函数，因此编译器会将函数体内的变量直接替换成内存地址，因此可以直接访问。</p>
-<p>至于类的声明周期，前文提过，当创造类的程序块结束时，类的析构函数会自动调用，释放类占用的资源。</p>
-<pre class="line-numbers language-none"><code class="language-none">如何在类内定义常量？
-&#96;&#96;&#96;cpp
-private:
-    const int max_size &#x3D;  100;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<pre><code>这样的方法是不行的，因为类声明时并没有存储空间，因此无法存储常量。
-正确的方法是：
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span><span class="token operator">:</span>
-    <span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">int</span> max_size <span class="token operator">=</span>  <span class="token number">100</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-这样的声明方式会在整个程序中创建一个常量，因此可以被所有对象共享。
-</code></pre>
-<pre><code>
-</code></pre>
-]]></content>
-      <categories>
-        <category>c++笔记</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Docker(Ubuntu)</title>
     <url>/yongxu.github.io/2024/10/27/docker(Ubuntu)/</url>
     <content><![CDATA[<h3 id="配置docker"><a href="#配置docker" class="headerlink" title="配置docker"></a><strong>配置docker</strong></h3><hr>
@@ -613,6 +466,237 @@ check_accuracy<span class="token punctuation">(</span>val_loader<span class="tok
       </categories>
       <tags>
         <tag>deep-learning, pytorch</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>类-L1-初步认识</title>
+    <url>/yongxu.github.io/2024/10/22/c++L1%E5%88%9D%E6%AD%A5/</url>
+    <content><![CDATA[<h4 id="类的概念"><a href="#类的概念" class="headerlink" title="类的概念"></a><strong>类的概念</strong></h4><hr>
+<p>类是面向对象编程的核心。我喜欢把类理解为一组数据和一个接口。例如机器人可以是一个类，他有一些数据，如颜色、大小、型号等，还有一个接口，如移动、转动、开关等。<br>类可以包含成员变量、成员函数、构造函数、析构函数等。成员变量是类的状态，成员函数是类的行为。</p>
+<h4 id="类的声明和定义"><a href="#类的声明和定义" class="headerlink" title="类的声明和定义"></a><strong>类的声明和定义</strong></h4><hr>
+<p>通常我们将类的定义放在头文件，而类行为的实现放在源文件中。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">Robot</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">// private:  声明成员变量</span>
+    <span class="token comment">// 禁止直接访问，只能通过接口函数访问</span>
+    <span class="token comment">// 在初始化时，通过构造函数初始化</span>
+    <span class="token keyword">private</span><span class="token operator">:</span>
+        string color<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> size<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> position<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">float</span> rotation<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">// public:  声明接口函数</span>
+    <span class="token comment">// 允许直接访问，可以被其他函数调用</span>
+    <span class="token keyword">public</span><span class="token operator">:</span>
+        <span class="token comment">/*
+         构造函数
+         构造函数的作用是初始化类的状态
+         初始化方法：
+            直接初始化，如：Robot r("red", 1.0);
+            通过参数初始化，如：Robot r = Robot("red", 1.0);
+        */</span>
+        <span class="token function">Robot</span><span class="token punctuation">(</span>string c<span class="token punctuation">,</span> <span class="token keyword">float</span> s<span class="token punctuation">,</span> <span class="token keyword">float</span> p<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">float</span> r<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">/*
+         析构函数
+         析构函数的作用是释放类的资源（定义类的程序块结束后）
+         一般不需要内容，除非使用new申请了内存需要手动释放
+         */</span>
+        <span class="token operator">~</span><span class="token function">Robot</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">void</span> <span class="token function">move</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">void</span> <span class="token function">rotate</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">void</span> <span class="token function">show</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+下面是类的实现：
+<span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">Robot</span><span class="token punctuation">(</span>string c<span class="token punctuation">,</span> <span class="token keyword">float</span> s<span class="token punctuation">,</span> <span class="token keyword">float</span> p<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">float</span> r<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    color <span class="token operator">=</span> c<span class="token punctuation">;</span>
+    size <span class="token operator">=</span> s<span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span> 
+        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> r<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token operator">~</span><span class="token function">Robot</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">// 释放内存</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> x<span class="token punctuation">;</span>
+        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> y<span class="token punctuation">;</span>
+        position<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> z<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">rotate</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> x<span class="token punctuation">;</span>
+        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> y<span class="token punctuation">;</span>
+        rotation<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+=</span> z<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">show</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"color: "</span> <span class="token operator">&lt;&lt;</span> color <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"size: "</span> <span class="token operator">&lt;&lt;</span> size <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"position: "</span> <span class="token operator">&lt;&lt;</span> position<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> position<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> position<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"rotation: "</span> <span class="token operator">&lt;&lt;</span> rotation<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> rotation<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> rotation<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以上是类的声明和定义，我们可以看到，类中包含了一些成员变量，以及一些接口函数。</p>
+<pre class="line-numbers language-none"><code class="language-none">怎么理解接口？
+接口是服务端为客户端封装好的，客户端只需要调用接口函数，就能完成某些功能。
+服务端的责任是实现一些函数，并详细告知如何调用这些函数，以达到客户自己的目的。
+而客户端的任务就是详细阅读接口文档，并调用接口函数，完成自己的需求。
+所以，接口是服务端和客户端之间沟通的桥梁。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="如何使用类"><a href="#如何使用类" class="headerlink" title="如何使用类"></a><strong>如何使用类</strong></h4><hr>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">float</span> potions<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">3.0</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token keyword">float</span> rotation<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.3</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 类的创建和结构类似</span>
+Robot <span class="token function">robot</span><span class="token punctuation">(</span><span class="token string">"red"</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 下面的创造方法实际上生成了一个临时对象，并将其赋值给了robot2</span>
+Robot robot2 <span class="token operator">=</span> <span class="token function">Robot</span><span class="token punctuation">(</span><span class="token string">"blue"</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token comment">// 我们也可以定义一个指针变量指向类对象，但最后需要手动释放内存，因为析构函数没有delete</span>
+Robot <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Robot</span><span class="token punctuation">(</span><span class="token string">"green"</span><span class="token punctuation">,</span> <span class="token number">0.8</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 如果没有定义构造函数，可以不进行初始化赋值</span>
+Robot empty<span class="token punctuation">;</span>
+<span class="token comment">// 但如果已经定义了构造函数，这样的初始化是非法的。</span>
+<span class="token comment">// 但我们可以通过函数重载来使其合法</span>
+<span class="token comment">// 在类声明中，我们可以定义一个空参数的构造函数Robot();</span>
+
+<span class="token comment">// 在c++11中，我们可以用列表初始化的方式来初始化类对象</span>
+<span class="token comment">// 这需要列表内参数和某个构造函数参数一致</span>
+Robot robot3 <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"yellow"</span><span class="token punctuation">,</span> <span class="token number">0.7</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+Robot robot4<span class="token punctuation">&#123;</span><span class="token string">"black"</span><span class="token punctuation">,</span> <span class="token number">0.9</span><span class="token punctuation">,</span> potions<span class="token punctuation">,</span> rotation<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token comment">// 我们可以通过.来访问类的成员函数</span>
+robot<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">3.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+robot<span class="token punctuation">.</span><span class="token function">rotate</span><span class="token punctuation">(</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+robot<span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 但当我们使用const来修饰类对象时，我们不能调用类的成员函数</span>
+<span class="token comment">// 因为成员函数可能修改类的状态，而const对象不能修改状态</span>
+<span class="token comment">// 所以我们可以将某些成员函数声明为const，这样就可以在const对象上调用</span>
+<span class="token keyword">const</span> Robot robot5 <span class="token operator">=</span> robot<span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span><span class="token punctuation">;</span> <span class="token comment">// 将shoow最后加上const，表示该函数不修改类的状态，即可被调用</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="this指针"><a href="#this指针" class="headerlink" title="this指针"></a><strong>this指针</strong></h4><hr>
+<p>this指针是一个隐含的指针，指向当前对象的地址。在类的成员函数中，我们可以通过this指针来访问类的成员变量。<br>假如我们想让一个类的成员函数返回这个类本身，我们可以用this指针来实现。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">// 第一个Robot表明这是函数的返回值类型</span>
+<span class="token comment">// 第二个Robot表明这是Robot类的一个成员函数</span>
+<span class="token keyword">const</span> Robot<span class="token operator">&amp;</span> <span class="token class-name">Robot</span><span class="token double-colon punctuation">::</span><span class="token function">returnthisrobot</span><span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a><strong>作用域</strong></h4><hr>
+<p>为什么定义类的成员函数是要加上类名称<code>Robot::</code>呢？<br>原因是我们声明成员函数时，是在类内进行的，所以作用域局限在类内。<br>因此在类外进行定义时，需要加上类名称。<br>这也就意味着我们可以在类外定义另一个同名函数，而不会与类的成员函数冲突。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">move</span><span class="token punctuation">(</span><span class="token keyword">float</span> x<span class="token punctuation">,</span> <span class="token keyword">float</span> y<span class="token punctuation">,</span> <span class="token keyword">float</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>那为什么在类的成员函数中，我们可以直接使用类内的成员变量呢？<br>原因是成员函数都是内联函数，因此编译器会将函数体内的变量直接替换成内存地址，因此可以直接访问。</p>
+<p>至于类的声明周期，前文提过，当创造类的程序块结束时，类的析构函数会自动调用，释放类占用的资源。</p>
+<pre class="line-numbers language-none"><code class="language-none">如何在类内定义常量？
+&#96;&#96;&#96;cpp
+private:
+    const int max_size &#x3D;  100;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre><code>这样的方法是不行的，因为类声明时并没有存储空间，因此无法存储常量。
+正确的方法是：
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span><span class="token operator">:</span>
+    <span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">int</span> max_size <span class="token operator">=</span>  <span class="token number">100</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+这样的声明方式会在整个程序中创建一个常量，因此可以被所有对象共享。
+</code></pre>
+<pre><code>
+</code></pre>
+]]></content>
+      <categories>
+        <category>c++笔记</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>类-L2-重载&amp;&amp;友元函数</title>
+    <url>/yongxu.github.io/2024/11/13/c++L2%E9%87%8D%E8%BD%BD/</url>
+    <content><![CDATA[<h3 id="“重载”定义"><a href="#“重载”定义" class="headerlink" title="“重载”定义"></a><strong>“重载”定义</strong></h3><p>c++语法中有基本的运算符，例如+、-、&lt;&lt;等。但他们使用的对象一般都是常规变量，例如int、float这样的类型。<br>如果我们希望将两个类相加（例如目的可能是将类的某些private值相加，并形成一个新的类），这时候我们就无法使用+来进行，因此我们需要<strong>重载</strong>运算符，使得运算符<strong>根据操作数的类型</strong>来选择运算逻辑。</p>
+<h3 id="重载使用实例"><a href="#重载使用实例" class="headerlink" title="重载使用实例"></a><strong>重载使用实例</strong></h3><p>下面我们给出一个类定义：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">Time</span> <span class="token punctuation">&#123;</span>
+<span class="token keyword">private</span><span class="token operator">:</span>
+    <span class="token keyword">int</span> hour<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> minute<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> second<span class="token punctuation">;</span>
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token function">Time</span><span class="token punctuation">(</span><span class="token keyword">int</span> h <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">int</span> m <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        hour <span class="token operator">=</span> h<span class="token punctuation">;</span>
+        minute <span class="token operator">=</span> m<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token operator">~</span><span class="token function">Time</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    Time <span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span><span class="token keyword">const</span> Time<span class="token operator">&amp;</span> t<span class="token punctuation">)</span> <span class="token keyword">const</span> <span class="token punctuation">&#123;</span>
+        Time sum<span class="token punctuation">;</span>
+        sum<span class="token punctuation">.</span>mintue <span class="token operator">=</span> minute <span class="token operator">+</span> t<span class="token punctuation">.</span>minute<span class="token punctuation">;</span>
+        sum<span class="token punctuation">.</span>hour <span class="token operator">=</span> <span class="token punctuation">(</span>hour <span class="token operator">+</span> t<span class="token punctuation">.</span>hour <span class="token operator">+</span> sum<span class="token punctuation">.</span>minute <span class="token operator">/</span> <span class="token number">60</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">24</span><span class="token punctuation">;</span>
+        sum<span class="token punctuation">.</span>minute <span class="token operator">=</span> sum<span class="token punctuation">.</span>minute <span class="token operator">%</span> <span class="token number">60</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> sum<span class="token punctuation">.</span>minute<span class="token punctuation">;</span> 
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时我们就对”+”运算符进行了重载，使得它可以对两个Time类对象进行相加操作。<br>重载使用的基本模式如下：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">类名 <span class="token keyword">operator</span>符号<span class="token punctuation">(</span><span class="token keyword">const</span> 类名<span class="token operator">&amp;</span> 参数名<span class="token punctuation">)</span> <span class="token keyword">const</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 重载逻辑</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>其中，类名是操作符所作用的类名，符号是重载的运算符，参数名是操作符所需要的另一个类名。<br>重载运算符有两种使用方式<br>一种是将其当成成员变量使用<br>另一种是将其当成”+”运算符使用</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time <span class="token function">t1</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Time <span class="token function">t2</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">45</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Time t3 <span class="token operator">=</span> ti<span class="token punctuation">.</span><span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span>t2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Time t4 <span class="token operator">=</span> t1 <span class="token operator">+</span> t2<span class="token punctuation">;</span> <span class="token comment">// 等价于t3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意，当使用t1+t2时，t1是调用对象，而t2是传递的参数。<br>因为返回的值是Time，所以我们可以连用+运算符。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time t5 <span class="token operator">=</span> t1 <span class="token operator">+</span> t2 <span class="token operator">+</span> t3<span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个语句的转化流程为</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time t5 <span class="token operator">=</span> t1<span class="token punctuation">.</span><span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span>t2<span class="token operator">+</span>t3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">-></span>
+Time t5 <span class="token operator">=</span> <span class="token punctuation">(</span>t1<span class="token punctuation">.</span><span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span>t2<span class="token punctuation">.</span><span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span>t3<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 因此是可行的</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="友元函数"><a href="#友元函数" class="headerlink" title="友元函数"></a><strong>友元函数</strong></h3><p>让我们考虑一种重载，假设我们重载了*运算符，使得它可以对两个Time类对象进行相乘操作。<br>这里我们先不考虑这个返回值的意义。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time <span class="token keyword">operator</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> <span class="token keyword">int</span> m<span class="token punctuation">)</span> <span class="token keyword">const</span> <span class="token punctuation">&#123;</span>
+    Time product<span class="token punctuation">;</span>
+    product<span class="token punctuation">.</span>hour <span class="token operator">=</span> hour <span class="token operator">*</span> n<span class="token punctuation">;</span>
+    product<span class="token punctuation">.</span>minute <span class="token operator">=</span> minute <span class="token operator">*</span> m<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> product<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们可以这样使用这个重载</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time <span class="token function">t1</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Time t2  <span class="token operator">=</span> t1 <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">// 等价于t1.operator*(2)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>但是，如果我们交换乘法顺序，会怎么样呢？</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time t3 <span class="token operator">=</span> <span class="token number">2</span> <span class="token operator">*</span> t1<span class="token punctuation">;</span> <span class="token comment">// ???我们说过*左边是调用对象，但此时左边是2，显然不符合规则。</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这时候，我们就需要考虑到<strong>友元函数</strong>的概念。<br>我们将新定义一个友元重载函数，将Time和int类都当作参数，传出新的Time对象。<br>之所以不使用普通的函数，是因为普通函数无法访问类的私有成员。<br>所以我们需要一个类的“友好”的函数，可以让他访问类的私有成员。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">// 友元函数的声明需要放在类的声明内</span>
+<span class="token keyword">friend</span> Time <span class="token keyword">operator</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">const</span> Time<span class="token operator">&amp;</span> t<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 定义时不需要friend关键字,也不需要定义域Time::</span>
+Time <span class="token keyword">operator</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">const</span> Time<span class="token operator">&amp;</span> t<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    Time product<span class="token punctuation">;</span>
+    product<span class="token punctuation">.</span>hour <span class="token operator">=</span> t<span class="token punctuation">.</span>hour <span class="token operator">*</span> n<span class="token punctuation">;</span>
+    product<span class="token punctuation">.</span>minute <span class="token operator">=</span> t<span class="token punctuation">.</span>minute <span class="token operator">*</span> n<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> product<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>友元函数在使用时，会自动将前后的两个类当作参数，并调用友元函数。<br>t1<em>2 -&gt; operator</em>(t1, 2);</p>
+<h3 id="常见友元函数"><a href="#常见友元函数" class="headerlink" title="常见友元函数"></a>常见友元函数</h3><p>我们还可以对&lt;&lt;运算符进行重载，使得它可以输出Time类的对象。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">friend</span> ostream<span class="token operator">&amp;</span> <span class="token keyword">operator</span><span class="token operator">&lt;&lt;</span><span class="token punctuation">(</span>ostream<span class="token operator">&amp;</span> os<span class="token punctuation">,</span> <span class="token keyword">const</span> Time<span class="token operator">&amp;</span> t<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    os <span class="token operator">&lt;&lt;</span> t<span class="token punctuation">.</span>hour <span class="token operator">&lt;&lt;</span> <span class="token string">":"</span> <span class="token operator">&lt;&lt;</span> t<span class="token punctuation">.</span>minute<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> os<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下面对代码进行解释。<br>一般我们使用的cout语句，cout其实是ostream类的一个对象,&lt;&lt;是一个被其重载的运算符，后面的变量或常量就是参数。<br>因此cout &lt;&lt; x 的本质就是调用了x的operator&lt;&lt;函数，而函数实现就是打印变量的值。<br>之所以返回ostream&amp;，是为了连用&lt;&lt;运算符。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Time <span class="token function">t1</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+cout <span class="token operator">&lt;&lt;</span> t1<span class="token punctuation">;</span> <span class="token comment">// 输出10:30</span>
+Time <span class="token function">t2</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">45</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+cout <span class="token operator">&lt;&lt;</span> t1 <span class="token operator">&lt;&lt;</span> t2<span class="token punctuation">;</span> <span class="token comment">// 输出10:3015:45</span>
+<span class="token comment">// cout &lt;&lt; t1返回还是cout, 所以可以继续cout &lt;&lt; t2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对于&lt;&lt;的重载，我们必须使用友元函数，不然的话，这个运算符的使用就会很奇怪<br>t1 &lt;&lt; cout -&gt; ti.operator&lt;&lt;(cout)<br>因此我们使用友元函数。</p>
+]]></content>
+      <categories>
+        <category>c++笔记</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
       </tags>
   </entry>
 </search>
