@@ -710,4 +710,28 @@ cout <span class="token operator">&lt;&lt;</span> t1 <span class="token operator
         <tag>c++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>激光对抗小车开发日志</title>
+    <url>/yongxu.github.io/2025/03/02/%E6%BF%80%E5%85%89%E5%AF%B9%E6%8A%97%E5%B0%8F%E8%BD%A6%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/</url>
+    <content><![CDATA[<h2 id="2-25-3-2"><a href="#2-25-3-2" class="headerlink" title="2.25-3.2"></a>2.25-3.2</h2><h3 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h3><p>确认选题后进行了简单的组内分工，我负责定位导航系统以及视觉识别跟踪系统，同时学习控制部分。<br>感觉任务还是蛮重的，但我的想法也好多好多，很多比较先进的算法也不知道能不能做得出来，比如其实我还挺想做最优控制的，用这个来控制激光器跟踪应该会很丝滑。<br>视觉上我也超想跑一个slam实践一下，或者搞个激光雷达玩玩。</p>
+<p>但后几天的调研发现这些方案太贵了，而且或许没太大必要性，我们有更好的定位方案。或许还是识别小车更重要一点。</p>
+<h3 id="工作进度"><a href="#工作进度" class="headerlink" title="工作进度"></a>工作进度</h3><ul>
+<li>确定了几种可行的定位方案：imu惯性测量、两个激光测距定点、观察头顶的视觉slam、激光雷达。</li>
+<li>调研了大批的开发板：jetson nano、jetson tx2、树莓派5b+kit、香橙派、爱思派。</li>
+<li>配好了yolo环境，可以开始收集数据集训练网络了。</li>
+</ul>
+<h3 id="下周安排"><a href="#下周安排" class="headerlink" title="下周安排"></a>下周安排</h3><ul>
+<li>定位方案不着急确定，可以一个一个尝试，看哪个方案最合适。</li>
+<li>首要确定开发板，然后开始搭建开发环境，搭载yolo进行简单小车识别，考虑如何提前小车位置信息。</li>
+<li>和老师同学交流，商讨数据集。</li>
+<li>开题答辩ppt完成。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>开发日志</category>
+      </categories>
+      <tags>
+        <tag>slam</tag>
+      </tags>
+  </entry>
 </search>
