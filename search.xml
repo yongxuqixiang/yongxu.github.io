@@ -748,4 +748,37 @@ cout <span class="token operator">&lt;&lt;</span> t1 <span class="token operator
         <tag>slam</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Ubuntu开发知识记录</title>
+    <url>/yongxu.github.io/2025/03/12/ubuntu%E5%BC%80%E5%8F%91%E7%9F%A5%E8%AF%86%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h1 id="远程开发技巧"><a href="#远程开发技巧" class="headerlink" title="远程开发技巧"></a>远程开发技巧</h1><h2 id="远程连接"><a href="#远程连接" class="headerlink" title="远程连接"></a>远程连接</h2><p>一般采用ssh协议，可以通过网线、otg和无线</p>
+<h4 id="有线链接"><a href="#有线链接" class="headerlink" title="有线链接"></a>有线链接</h4><p>推荐使用网线，电脑没有网口可以买一个USB拓展坞，一般都带网口。<br>网线连接好两台设备后，先使用显示屏和键鼠连接一台设备，然后在另一台设备上输入<code>ifconfig</code>命令查看ip地址，注意不是wlan0的ip地址，而是网口分配的的ip地址。</p>
+<pre class="line-numbers language-none"><code class="language-none">如果命令无效，根据报错apt install即可，如果是高版本ubuntu可能无法使用这个命令
+如果有桌面，可以直接去网络设置中查看分配的ip地址，也可以设置一个好记的地址方便记忆。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>然后在另一台设备上输入<code>ssh 用户名@ip地址</code>命令进行远程连接，输入密码即可，注意用户名一定要正确。<br>如果使用otg线连接，此时需要的ip地址是主机ip地址，注意区分和网口连接的不同。</p>
+<h4 id="无线连接"><a href="#无线连接" class="headerlink" title="无线连接"></a>无线连接</h4><p>两台设备处于同一局域网，可以直接使用无线连接，不需要网线。<br>首先查看路由器给嵌入式设备分配的ip，此时是wlan0的ip地址。<br>然后在另一台设备上输入<code>ssh 用户名@wlan0的ip地址</code>命令进行远程连接，输入密码即可。</p>
+<p>注意<strong>所有ip地址都是ipv4地址，ipv6地址不适用.</strong></p>
+<h2 id="scp数据传输"><a href="#scp数据传输" class="headerlink" title="scp数据传输"></a>scp数据传输</h2><pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd"># 将本地文件上传远程
+scp 本地文件路径 用户名@ip地址:远程文件路径 
+# 拉取远程文件至本地 
+scp 用户名@ip地址:远程文件路径 本地文件路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h1><h2 id="Yolo系列模型转换方法"><a href="#Yolo系列模型转换方法" class="headerlink" title="Yolo系列模型转换方法"></a>Yolo系列模型转换方法</h2><p>首先确保环境已经正确安装。<br>到<a href="https://docs.ultralytics.com/zh#yolo-a-brief-history">yolo官网</a>了解各个模型推理时间和准确度的情况，再根据网上资料确定自己所需的yolo版本。如果需要自己训练，需要下载对应版本的GitHub仓库里的代码，按照说明进行训练。如果不需要训练，直接下载.pt权重文件即可。</p>
+<h4 id="使用tensorrtx转换模型"><a href="#使用tensorrtx转换模型" class="headerlink" title="使用tensorrtx转换模型"></a>使用tensorrtx转换模型</h4><p>前往<a href="https://github.com/wang-xinyu/tensorrtx">tensorrtx</a>github仓库，里面有对应各个模型版本的文件夹，例如点入yolov5，进入yolov5文件夹，可以看到readme文件，里面有详细的转换方法。</p>
+<pre class="line-numbers language-none"><code class="language-none">需要注意的是，yolo系列除了大版本，例如yolov5、yolov8之外，还有小版本区分，例如yolov5 version 5.0、yolov5 version 6.0等，同时还有不同大小的网络结构，比如yolov5l，yolov5m，yolov5s等。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>一般来说，你先根据你yolo.pt文件的version版本，选择对应的tensorrtx版本，git clone 下载yolo仓库和tensorrtx仓库，然后进入tensorrtx&#x2F;yolovX文件夹，根据说明，执行get_wts.py脚本，将pt文件转化为wts文件，然后再将编译tensorrtx，再yolovX目录下</p>
+<pre class="line-numbers language-none"><code class="language-none">mkdir build
+cd build
+cmake..
+make<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>执行完上述命令后，根据说明，执行yolovX的文件，就可以将wts文件转换为engine文件，完成模型转换。<br>可以采用tensorrtx给的测试文件，看下模型加载是否正确，推理时间是否得到优化。<br>后续需要加载模型推理也可以直接抄这个测试文件。</p>
+]]></content>
+      <categories>
+        <category>知识积累</category>
+      </categories>
+      <tags>
+        <tag>ubuntu</tag>
+      </tags>
+  </entry>
 </search>
