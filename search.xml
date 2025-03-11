@@ -766,8 +766,10 @@ scp 用户名@ip地址:远程文件路径 本地文件路径<span aria-hidden="t
 
 <h1 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h1><h2 id="Yolo系列模型转换方法"><a href="#Yolo系列模型转换方法" class="headerlink" title="Yolo系列模型转换方法"></a>Yolo系列模型转换方法</h2><p>首先确保环境已经正确安装。<br>到<a href="https://docs.ultralytics.com/zh#yolo-a-brief-history">yolo官网</a>了解各个模型推理时间和准确度的情况，再根据网上资料确定自己所需的yolo版本。如果需要自己训练，需要下载对应版本的GitHub仓库里的代码，按照说明进行训练。如果不需要训练，直接下载.pt权重文件即可。</p>
 <h4 id="使用tensorrtx转换模型"><a href="#使用tensorrtx转换模型" class="headerlink" title="使用tensorrtx转换模型"></a>使用tensorrtx转换模型</h4><p>前往<a href="https://github.com/wang-xinyu/tensorrtx">tensorrtx</a>github仓库，里面有对应各个模型版本的文件夹，例如点入yolov5，进入yolov5文件夹，可以看到readme文件，里面有详细的转换方法。</p>
-<pre class="line-numbers language-none"><code class="language-none">需要注意的是，yolo系列除了大版本，例如yolov5、yolov8之外，还有小版本区分，例如yolov5 version 5.0、yolov5 version 6.0等，同时还有不同大小的网络结构，比如yolov5l，yolov5m，yolov5s等。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>一般来说，你先根据你yolo.pt文件的version版本，选择对应的tensorrtx版本，git clone 下载yolo仓库和tensorrtx仓库，然后进入tensorrtx&#x2F;yolovX文件夹，根据说明，执行get_wts.py脚本，将pt文件转化为wts文件，然后再将编译tensorrtx，再yolovX目录下</p>
+<pre class="line-numbers language-none"><code class="language-none">需要注意的是，yolo系列除了大版本，例如yolov5、yolov8之外，还有小版本区分，
+例如yolov5 version 5.0、yolov5 version 6.0等，同时还有不同大小的网络结构，
+比如yolov5l，yolov5m，yolov5s等。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>一般来说，你先根据你yolo.pt文件的version版本，选择对应的tensorrtx版本，<br>git clone 下载yolo仓库和tensorrtx仓库，然后进入tensorrtx&#x2F;yolovX文件夹，<br>根据说明，执行get_wts.py脚本，将pt文件转化为wts文件，然后再将编译tensorrtx，在yolovX目录下</p>
 <pre class="line-numbers language-none"><code class="language-none">mkdir build
 cd build
 cmake..
