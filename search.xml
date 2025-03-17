@@ -786,7 +786,22 @@ cd build
 cmake..
 make<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>执行完上述命令后，根据说明，执行yolovX的文件，就可以将wts文件转换为engine文件，完成模型转换。<br>可以采用tensorrtx给的测试文件，看下模型加载是否正确，推理时间是否得到优化。<br>后续需要加载模型推理也可以直接抄这个测试文件。</p>
-]]></content>
+<h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><h2 id="动态链接库问题"><a href="#动态链接库问题" class="headerlink" title="动态链接库问题"></a>动态链接库问题</h2><p>使用ananconda进行环境管理时，cmake项目时，可能会产生动态库链接问题，即系统版本库文件和anaconda版本库文件不匹配。</p>
+<h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><ul>
+<li>进入ananconda的lib文件夹，删除不匹配的库文件，并将系统库文件链接到anaconda库文件上。</li>
+</ul>
+<h3 id="例如"><a href="#例如" class="headerlink" title="例如"></a>例如</h3><p>以libwayland-client.so.0为例，系统版本为&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;</p>
+<pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd"># 用内置命令ldd查看出现问题的libwayland-client.so.0当中，所依赖的ffi这个库的叫什么。
+ldd &#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libwayland-client.so.0 | grep ffi
+# 查看系统的libffi
+ll &#x2F;lib&#x2F;x86_64-linux-gnu&#x2F; | grep ffi
+# 查看Anaconda的libffi
+ll ~&#x2F;anaconda3&#x2F;lib&#x2F; | grep ffi
+# 可能会发现这两个库的版本不一致，删除anaconda的libffi，并将系统的libffi链接到anaconda的libffi上。
+# 假设系统版本的libffi指向了7.1, anaconda为8.1
+rm ~&#x2F;anaconda3&#x2F;lib&#x2F;libffi.so.7 #虽然它是so.7，但他指向了8.1的版本，所以需要重新指向。
+# 让conda的libffi指向系统的libffi
+ln -s &#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libffi.so.7.1 ~&#x2F;anaconda3&#x2F;lib&#x2F;libffi.so.7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
       <categories>
         <category>知识积累</category>
       </categories>
