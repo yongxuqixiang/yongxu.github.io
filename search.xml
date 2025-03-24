@@ -855,4 +855,45 @@ sudo boot-repair
         <tag>ubuntu</tag>
       </tags>
   </entry>
+  <entry>
+    <title>MonoGS阅读笔记</title>
+    <url>/yongxu.github.io/2025/03/24/MonoGS%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h2 id="框架思路与原理"><a href="#框架思路与原理" class="headerlink" title="框架思路与原理"></a>框架思路与原理</h2><p>这是一个<strong>完全基于梯度下降</strong>做优化的框架，流程为产生高斯点、高斯点投影到图像、优化相机位姿、优化高斯点属性。</p>
+<h3 id="产生高斯点"><a href="#产生高斯点" class="headerlink" title="产生高斯点"></a>产生高斯点</h3><p>待续</p>
+<h3 id="高斯点投影到图像"><a href="#高斯点投影到图像" class="headerlink" title="高斯点投影到图像"></a>高斯点投影到图像</h3><p>核心是将3D高斯点渲染成图像（使用了开源算法<a href="https://team.inria.fr/graphdeco">gaussian_splatting</a>）<br>这个渲染模型是基于光栅化的，且基于针孔相机模型，所以改到泰勒相机模型必须学习并修改渲染模型。</p>
+<h3 id="优化相机位姿"><a href="#优化相机位姿" class="headerlink" title="优化相机位姿"></a>优化相机位姿</h3><p>获取到图像后，使用了两个掩膜去滤去不关注的background，然后<strong>直接计算渲染图和真实图的像素L1距离</strong>作为损失函数，使用Adam优化器进行优化。<br>注意，此时只优化了相机位姿以及<strong>曝光</strong>。</p>
+<h3 id="优化高斯点属性"><a href="#优化高斯点属性" class="headerlink" title="优化高斯点属性"></a>优化高斯点属性</h3><p>待续</p>
+<h2 id="代码流程和框架"><a href="#代码流程和框架" class="headerlink" title="代码流程和框架"></a>代码流程和框架</h2><p>总共三个进程:前端（主进程）、后端、GUI（可关闭）。<br>主进程结束后会进入结果评估。</p>
+<h3 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h3><p>初始化流程待续。</p>
+<ul>
+<li>等待vis2main队列数据（GUI界面数据，即是否暂停）</li>
+<li>等待后端更新3D高斯点数据、关键帧数据、是否可共视数据</li>
+<li>等待完毕<ul>
+<li>通过Camera类获取相机数据（内参和色彩、位姿、像素深度真值）</li>
+<li>计算梯度（还不知道有啥用）</li>
+<li><strong>tracking</strong><ul>
+<li>将上一帧位姿作为初值</li>
+<li>配置求解器</li>
+<li>迭代求解，将高斯点渲染成二维图，计算像素的L1距离作为损失函数，仅更新相机位姿和曝光</li>
+<li>每十轮输出到GUI显示</li>
+</ul>
+</li>
+<li>结果推送给GUI显示</li>
+<li>是否送入滑动窗口给后端优化<ul>
+<li>先判断是否为关键帧，根据视场重叠情况、两关键帧时间间隔等</li>
+<li>整理滑动窗口</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h3><h3 id="GUI"><a href="#GUI" class="headerlink" title="GUI"></a>GUI</h3><p>待续</p>
+]]></content>
+      <categories>
+        <category>知识积累</category>
+      </categories>
+      <tags>
+        <tag>3DGS</tag>
+      </tags>
+  </entry>
 </search>
