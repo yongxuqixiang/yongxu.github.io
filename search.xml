@@ -887,8 +887,111 @@ sudo boot-repair
 </ul>
 </li>
 </ul>
-<h4 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h4><p>待续</p>
+<h4 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h4><ul>
+<li>等待后端队列更新（前端调用request请求时写入）</li>
+<li>等待到关键帧请求<ul>
+<li>add_next_kf函数添加关键帧<ul>
+<li>生成点云<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">&lt;</span>!<span class="token operator">-</span><span class="token operator">-</span> 采用针孔模型，将图像点和深度信息结合，生成点云 <span class="token operator">-</span><span class="token operator">-</span><span class="token operator">></span>
+pcd_tmp <span class="token operator">=</span> o3d<span class="token punctuation">.</span>geometry<span class="token punctuation">.</span>PointCloud<span class="token punctuation">.</span>create_from_rgbd_image<span class="token punctuation">(</span>
+          rgbd<span class="token punctuation">,</span>
+          o3d<span class="token punctuation">.</span>camera<span class="token punctuation">.</span>PinholeCameraIntrinsic<span class="token punctuation">(</span>
+              cam<span class="token punctuation">.</span>image_width<span class="token punctuation">,</span>
+              cam<span class="token punctuation">.</span>image_height<span class="token punctuation">,</span>
+              cam<span class="token punctuation">.</span>fx<span class="token punctuation">,</span>
+              cam<span class="token punctuation">.</span>fy<span class="token punctuation">,</span>
+              cam<span class="token punctuation">.</span>cx<span class="token punctuation">,</span>
+              cam<span class="token punctuation">.</span>cy<span class="token punctuation">,</span>
+          <span class="token punctuation">)</span><span class="token punctuation">,</span>
+          extrinsic<span class="token operator">=</span>W2C<span class="token punctuation">,</span>
+          project_valid_depth_only<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+      <span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>将点云数据丢入nn网络，再传入优化器，准备优化</li>
+</ul>
+</li>
+<li>读取滑动窗口所有相机位姿和曝光，建立Adam优化器</li>
+<li>调用map进行优化（分两轮，第一轮不进行裁剪，第二轮只迭代一次，进行裁剪）<ul>
+<li>所有关键帧渲染损失</li>
+<li>随机选择其他视点渲染损失</li>
+<li>（修剪高斯点，只保留在视野内的点）</li>
+<li>跟新高斯点和相机位姿</li>
+</ul>
+</li>
+<li>将结果推送到前端（主要是优化后的高斯点数据）</li>
+</ul>
+</li>
+</ul>
 <h4 id="GUI"><a href="#GUI" class="headerlink" title="GUI"></a>GUI</h4><p>待续</p>
+<h2 id="高斯渲染依赖库"><a href="#高斯渲染依赖库" class="headerlink" title="高斯渲染依赖库"></a>高斯渲染依赖库</h2><p>这套框架的渲染模型完全基于<a href="https://github.com/graphdeco-inria/diff-gaussian-rasterization">Differential Gaussian Rasterization</a>这个开源库<br>下面为该开源库的学习笔记。</p>
+<h4 id="基本情况"><a href="#基本情况" class="headerlink" title="基本情况"></a>基本情况</h4><p>这个库层层嵌套，接口为python编写，实际将一个c++函数绑定到python接口，而c++函数又调用了cuda编写的函数文件。<br>调用路径为:<br>   init.py(rasterize_gaussians)<br>-&gt; ext.cpp(绑定c++函数RasterizeGaussiansCUDA)<br>-&gt; rasterize_points.cu(继续调用CudaRasterizer::Rasterizer::forward)<br>-&gt; rasterizer_impl.cu(高斯渲染全过程，先preprocess预处理，最后调用render进行渲染)<br>-&gt; forward.cu(绝大多数底层算法都在这里)<br>以上均为<strong>前端</strong>调用过程，后端调用基本一致。</p>
+<h4 id="前端算法细节"><a href="#前端算法细节" class="headerlink" title="前端算法细节"></a>前端算法细节</h4><h5 id="preprocess"><a href="#preprocess" class="headerlink" title="preprocess"></a>preprocess</h5><p>3D-&gt;2D投影</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 世界坐标系3D坐标投影到图像坐标系，归一化，并保留z，在渲染时判断遮挡关系需要。
+float3 p_orig &#x3D; &#123; orig_points[3 * idx], orig_points[3 * idx + 1], orig_points[3 * idx + 2] &#125;;
+float4 p_hom &#x3D; transformPoint4x4(p_orig, projmatrix);
+float p_w &#x3D; 1.0f &#x2F; (p_hom.w + 0.0000001f);
+float3 p_proj &#x3D; &#123; p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w &#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>计算2D协方差</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++"> &#x2F;&#x2F; 计算雅可比矩阵，将雅可比矩阵投影到2D作为2D协方差矩阵。
+float3  t&#x3D; transformPoint4x3(mean, viewmatrix);
+
+const float limx &#x3D; 1.3f * tan_fovx;
+const float limy &#x3D; 1.3f * tan_fovy;
+const float txtz &#x3D; t.x &#x2F; t.z;
+const float tytz &#x3D; t.y &#x2F; t.z;
+t.x &#x3D; min(limx, max(-limx, txtz)) * t.z;
+t.y &#x3D; min(limy, max(-limy, tytz)) * t.z;
+
+glm::mat3 J &#x3D; glm::mat3(
+	focal_x &#x2F; t.z, 0.0f, -(focal_x * t.x) &#x2F; (t.z * t.z),
+	0.0f, focal_y &#x2F; t.z, -(focal_y * t.y) &#x2F; (t.z * t.z),
+	0, 0, 0);
+
+glm::mat3 W &#x3D; glm::mat3(
+	viewmatrix[0], viewmatrix[4], viewmatrix[8],
+	viewmatrix[1], viewmatrix[5], viewmatrix[9],
+	viewmatrix[2], viewmatrix[6], viewmatrix[10]);
+
+glm::mat3 T &#x3D; W * J;
+
+glm::mat3 Vrk &#x3D; glm::mat3(
+	cov3D[0], cov3D[1], cov3D[2],
+	cov3D[1], cov3D[3], cov3D[4],
+	cov3D[2], cov3D[4], cov3D[5]);
+
+glm::mat3 cov &#x3D; glm::transpose(T) * glm::transpose(Vrk) * T;
+
+cov[0][0] +&#x3D; 0.3f;
+cov[1][1] +&#x3D; 0.3f;
+return &#123; float(cov[0][0]), float(cov[0][1]), float(cov[1][1]) &#125;;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h5 id="render"><a href="#render" class="headerlink" title="render"></a>render</h5><p>计算所有2D高斯点对每一个像素点的作用，生成渲染结果。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">
+float2 xy &#x3D; collected_xy[j];
+float2 d &#x3D; &#123; xy.x - pixf.x, xy.y - pixf.y &#125;;
+float4 con_o &#x3D; collected_conic_opacity[j];
+float power &#x3D; -0.5f * (con_o.x * d.x * d.x + con_o.z * d.y * d.y) - con_o.y * d.x * d.y;
+if (power &gt; 0.0f)
+	continue;
+
+float alpha &#x3D; min(0.99f, con_o.w * exp(power));
+if (alpha &lt; 1.0f &#x2F; 255.0f)
+	continue;
+float test_T &#x3D; T * (1 - alpha);
+if (test_T &lt; 0.0001f)
+&#123;
+	done &#x3D; true;
+	continue;
+&#125;
+
+&#x2F;&#x2F; Eq. (3) from 3D Gaussian splatting paper.
+for (int ch &#x3D; 0; ch &lt; CHANNELS; ch++)
+	C[ch] +&#x3D; features[collected_id[j] * CHANNELS + ch] * alpha * T;
+
+T &#x3D; test_T;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h4 id="后端优化算法细节"><a href="#后端优化算法细节" class="headerlink" title="后端优化算法细节"></a>后端优化算法细节</h4><p>待续</p>
 ]]></content>
       <categories>
         <category>知识积累</category>
