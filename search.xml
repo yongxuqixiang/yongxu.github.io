@@ -762,6 +762,14 @@ cout <span class="token operator">&lt;&lt;</span> t1 <span class="token operator
 <li>imu解码和编码器结合，惯性导航定位测试</li>
 <li>串口通信</li>
 </ul>
+<h2 id="3-24-4-1"><a href="#3-24-4-1" class="headerlink" title="3.24-4.1"></a>3.24-4.1</h2><h3 id="工作进度-4"><a href="#工作进度-4" class="headerlink" title="工作进度"></a>工作进度</h3><ul>
+<li>放弃小陀螺方案</li>
+<li>确定导航方案，2D激光雷达+IMU</li>
+</ul>
+<h3 id="本周总结-3"><a href="#本周总结-3" class="headerlink" title="本周总结"></a>本周总结</h3><p>主控板烧了，电控方面停滞一周进度。<br>小陀螺方案滑环和同步带结构太复杂且昂贵，同时收益很低，放弃。<br>购买了成品IMU组件，不需要自己做IMU解码，直接使用。<br>导航定位方案确定，但需要进一步调研。</p>
+<h3 id="下周安排-4"><a href="#下周安排-4" class="headerlink" title="下周安排"></a>下周安排</h3><ul>
+<li>跑通激光雷达和IMU的联合建图</li>
+</ul>
 ]]></content>
       <categories>
         <category>开发日志</category>
