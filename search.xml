@@ -770,6 +770,15 @@ cout <span class="token operator">&lt;&lt;</span> t1 <span class="token operator
 <h3 id="下周安排-4"><a href="#下周安排-4" class="headerlink" title="下周安排"></a>下周安排</h3><ul>
 <li>跑通激光雷达和IMU的联合建图</li>
 </ul>
+<h2 id="4-2-4-28"><a href="#4-2-4-28" class="headerlink" title="4.2 - 4.28"></a>4.2 - 4.28</h2><h3 id="工作进度-5"><a href="#工作进度-5" class="headerlink" title="工作进度"></a>工作进度</h3><ul>
+<li>完成建图、定位导航部分</li>
+<li>完成串口通信，导航可以跑通</li>
+<li>完成云台控制部分，云台可以转动</li>
+</ul>
+<h3 id="下周安排-5"><a href="#下周安排-5" class="headerlink" title="下周安排"></a>下周安排</h3><ul>
+<li>解决cmd_vel下发速度过低的问题，主要是local_planner路径太短</li>
+<li>云台控制模块接入导航模块，尝试云台控制</li>
+</ul>
 ]]></content>
       <categories>
         <category>开发日志</category>
@@ -867,18 +876,33 @@ sudo boot-repair
     <title>MonoGS阅读笔记</title>
     <url>/yongxu.github.io/2025/03/24/MonoGS%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h2 id="框架思路与原理"><a href="#框架思路与原理" class="headerlink" title="框架思路与原理"></a>框架思路与原理</h2><p>这是一个<strong>完全基于梯度下降</strong>做优化的框架，流程为产生高斯点、高斯点投影到图像、优化相机位姿、优化高斯点属性。</p>
-<h4 id="产生高斯点"><a href="#产生高斯点" class="headerlink" title="产生高斯点"></a>产生高斯点</h4><p>待续</p>
-<h4 id="高斯点投影到图像"><a href="#高斯点投影到图像" class="headerlink" title="高斯点投影到图像"></a>高斯点投影到图像</h4><p>核心是将3D高斯点渲染成图像（使用了开源算法<a href="https://team.inria.fr/graphdeco">gaussian_splatting</a>）<br>这个渲染模型是基于光栅化的，且基于针孔相机模型，所以改到泰勒相机模型必须学习并修改渲染模型。</p>
-<h4 id="优化相机位姿"><a href="#优化相机位姿" class="headerlink" title="优化相机位姿"></a>优化相机位姿</h4><p>获取到图像后，使用了两个掩膜去滤去不关注的background，然后<strong>直接计算渲染图和真实图的像素L1距离</strong>作为损失函数，使用Adam优化器进行优化。<br>注意，此时只优化了相机位姿以及<strong>曝光</strong>。</p>
-<h4 id="优化高斯点属性"><a href="#优化高斯点属性" class="headerlink" title="优化高斯点属性"></a>优化高斯点属性</h4><p>待续</p>
+<h4 id="产生高斯点"><a href="#产生高斯点" class="headerlink" title="产生高斯点"></a>产生高斯点</h4><h5 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h5><p>高斯点由点云生成，点云即每个像素点随机产生一个深度信息，投影到世界坐标系即可（如果由深度信息，就不会随机产生）。<br>拥有点云后进行一个下采样，减少点云密度，并由赋给新点云透明度、rot等属性，成为高斯点。</p>
+<h5 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h5><p>优化分为生长和去除。<br>高斯点的生长又分为克隆和分裂，主要针对梯度较大区域</p>
+<ul>
+<li>区域高斯点面积大：分裂成n个小高斯点，提高这个区域的分辨率</li>
+<li>区域高斯点面积小：克隆至n个小高斯点，提高这个区域的分辨率<br>高斯点生长完后，再进行去除，即计算每个高斯点的透明度，去除透明的高斯点。</li>
+</ul>
+<h4 id="高斯点投影到图像"><a href="#高斯点投影到图像" class="headerlink" title="高斯点投影到图像"></a>高斯点投影到图像</h4><p>3dgs核心，主要工作是</p>
+<ul>
+<li>将3D高斯投影到2D，同时计算协方差（协方差表征高斯点面积）</li>
+<li>计算每一个像素点受所有高斯点的影响，生成渲染图</li>
+</ul>
+<h4 id="优化相机位姿（前端）"><a href="#优化相机位姿（前端）" class="headerlink" title="优化相机位姿（前端）"></a>优化相机位姿（前端）</h4><p>获取到图像后，使用了两个掩膜去滤去不关注的background，然后<strong>直接计算渲染图和真实图的像素L1距离</strong>作为损失函数，使用Adam优化器进行优化。<br>注意，此时只优化了相机位姿以及<strong>曝光</strong>。</p>
+<h4 id="优化高斯点属性（后端）"><a href="#优化高斯点属性（后端）" class="headerlink" title="优化高斯点属性（后端）"></a>优化高斯点属性（后端）</h4><h5 id="初始化-1"><a href="#初始化-1" class="headerlink" title="初始化"></a>初始化</h5><p>对第一帧进行较长时间优化，可以获得比较好的高斯点状态，然后再回到前端，准备给GUI推送实时渲染画面。</p>
+<h5 id="维护关键帧"><a href="#维护关键帧" class="headerlink" title="维护关键帧"></a>维护关键帧</h5><p>后端维护关键帧，只有当前端推送关键帧时，对所有关键帧一起优化，并随机额外抽取视点进行优化。<br>同样采用渲染图与真实图的像素L1距离作为损失函数，使用Adam优化器进行优化。<br>优化参数包括高斯点的位置、尺度、颜色、透明度、旋转角度等。</p>
+<ul>
+<li>每优化一定轮次（default&#x3D;150）进行高斯点更新，即高斯点的生长和去除。</li>
+<li>每优化一定伦茨（default&#x3D;500）进行高斯点透明度激活，通过一个激活函数修改透明度。</li>
+<li>每优化一定轮次完全重置透明度。</li>
+</ul>
 <h2 id="代码流程和框架"><a href="#代码流程和框架" class="headerlink" title="代码流程和框架"></a>代码流程和框架</h2><p>总共三个进程:前端（主进程）、后端、GUI（可关闭）。<br>主进程结束后会进入结果评估。</p>
 <h4 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h4><p>初始化流程待续。</p>
 <ul>
 <li>等待vis2main队列数据（GUI界面数据，即是否暂停）</li>
-<li>等待后端更新3D高斯点数据、关键帧数据、是否可共视数据</li>
+<li>先推送第一帧至后端，等待后端完成1050轮的初始化</li>
 <li>等待完毕<ul>
 <li>通过Camera类获取相机数据（内参和色彩、位姿、像素深度真值）</li>
-<li>计算梯度（还不知道有啥用）</li>
+<li>计算梯度</li>
 <li><strong>tracking</strong><ul>
 <li>将上一帧位姿作为初值</li>
 <li>配置求解器</li>
@@ -888,7 +912,7 @@ sudo boot-repair
 </li>
 <li>结果推送给GUI显示</li>
 <li>是否送入滑动窗口给后端优化<ul>
-<li>先判断是否为关键帧，根据视场重叠情况、两关键帧时间间隔等</li>
+<li>先判断是否为关键帧，根据视场重叠情况（高斯点的n_touched的相似度）、两关键帧时间间隔</li>
 <li>整理滑动窗口</li>
 </ul>
 </li>
@@ -899,28 +923,16 @@ sudo boot-repair
 <li>等待后端队列更新（前端调用request请求时写入）</li>
 <li>等待到关键帧请求<ul>
 <li>add_next_kf函数添加关键帧<ul>
-<li>生成点云<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">&lt;</span>!<span class="token operator">-</span><span class="token operator">-</span> 采用针孔模型，将图像点和深度信息结合，生成点云 <span class="token operator">-</span><span class="token operator">-</span><span class="token operator">></span>
-pcd_tmp <span class="token operator">=</span> o3d<span class="token punctuation">.</span>geometry<span class="token punctuation">.</span>PointCloud<span class="token punctuation">.</span>create_from_rgbd_image<span class="token punctuation">(</span>
-          rgbd<span class="token punctuation">,</span>
-          o3d<span class="token punctuation">.</span>camera<span class="token punctuation">.</span>PinholeCameraIntrinsic<span class="token punctuation">(</span>
-              cam<span class="token punctuation">.</span>image_width<span class="token punctuation">,</span>
-              cam<span class="token punctuation">.</span>image_height<span class="token punctuation">,</span>
-              cam<span class="token punctuation">.</span>fx<span class="token punctuation">,</span>
-              cam<span class="token punctuation">.</span>fy<span class="token punctuation">,</span>
-              cam<span class="token punctuation">.</span>cx<span class="token punctuation">,</span>
-              cam<span class="token punctuation">.</span>cy<span class="token punctuation">,</span>
-          <span class="token punctuation">)</span><span class="token punctuation">,</span>
-          extrinsic<span class="token operator">=</span>W2C<span class="token punctuation">,</span>
-          project_valid_depth_only<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-<li>将点云数据丢入nn网络，再传入优化器，准备优化</li>
+<li>生成点云数据，下采样后制成高斯点</li>
+<li>传入优化器等待优化</li>
 </ul>
 </li>
 <li>读取滑动窗口所有相机位姿和曝光，建立Adam优化器</li>
-<li>调用map进行优化（分两轮，第一轮不进行裁剪，第二轮只迭代一次，进行裁剪）<ul>
-<li>所有关键帧渲染损失</li>
+<li>调用map进行优化（若是最后一个关键帧，会进行特殊优化）<ul>
+<li>所有关键帧渲染损失叠加</li>
 <li>随机选择其他视点渲染损失</li>
-<li>（修剪高斯点，只保留在视野内的点）</li>
+<li>若满足一定轮数，进行高斯点生长和去除</li>
+<li>若满足一定论述，进行高斯点透明度激活、重置</li>
 <li>跟新高斯点和相机位姿</li>
 </ul>
 </li>
@@ -938,7 +950,7 @@ float4 p_hom &#x3D; transformPoint4x4(p_orig, projmatrix);
 float p_w &#x3D; 1.0f &#x2F; (p_hom.w + 0.0000001f);
 float3 p_proj &#x3D; &#123; p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w &#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>计算2D协方差</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++"> &#x2F;&#x2F; 计算雅可比矩阵，将雅可比矩阵投影到2D作为2D协方差矩阵。
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++"> &#x2F;&#x2F; 计算雅可比矩阵，根据论文公式计算2D协方差
 float3  t&#x3D; transformPoint4x3(mean, viewmatrix);
 
 const float limx &#x3D; 1.3f * tan_fovx;
@@ -964,15 +976,14 @@ glm::mat3 Vrk &#x3D; glm::mat3(
 	cov3D[0], cov3D[1], cov3D[2],
 	cov3D[1], cov3D[3], cov3D[4],
 	cov3D[2], cov3D[4], cov3D[5]);
-
+&#x2F;&#x2F; 协方差公式 cov &#x3D; W * J * Vrk * (W * J)^T
 glm::mat3 cov &#x3D; glm::transpose(T) * glm::transpose(Vrk) * T;
 
 cov[0][0] +&#x3D; 0.3f;
 cov[1][1] +&#x3D; 0.3f;
 return &#123; float(cov[0][0]), float(cov[0][1]), float(cov[1][1]) &#125;;
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
+<p>至此获得所有2D高斯点位置和大小,可以进行渲染</p>
 <h5 id="render"><a href="#render" class="headerlink" title="render"></a>render</h5><p>计算所有2D高斯点对每一个像素点的作用，生成渲染结果。</p>
 <pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">
 float2 xy &#x3D; collected_xy[j];
